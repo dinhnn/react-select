@@ -25,19 +25,21 @@ class CreatableSelect extends React.Component {
 		} = this.props;
 
 		if (isValidNewOption({ label: this.inputValue })) {
-			const option = newOptionCreator({ label: this.inputValue, labelKey: this.labelKey, valueKey: this.valueKey });
-			const isOptionUnique = this.isOptionUnique({ option, options });
+			newOptionCreator({ label: this.inputValue, labelKey: this.labelKey, valueKey: this.valueKey }).then(option=>{
 
-			// Don't add the same option twice.
-			if (isOptionUnique) {
-				if (onNewOptionClick) {
-					onNewOptionClick(option);
-				} else {
-					options.unshift(option);
+				const isOptionUnique = this.isOptionUnique({ option, options });
 
-					this.select.selectValue(option);
+				// Don't add the same option twice.
+				if (isOptionUnique) {
+					if (onNewOptionClick) {
+						onNewOptionClick(option);
+					} else {
+						options.unshift(option);
+
+						this.select.selectValue(option);
+					}
 				}
-			}
+			});
 		}
 	}
 
@@ -215,7 +217,7 @@ const newOptionCreator = ({ label, labelKey, valueKey }) => {
 	option[labelKey] = label;
 	option.className = 'Select-create-option-placeholder';
 
-	return option;
+	return Promise.resolve(option);
 };
 
 const promptTextCreator = label => `Create option "${label}"`;

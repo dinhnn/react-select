@@ -1571,10 +1571,6 @@ var Select$1 = function (_React$Component) {
 			var ariaOwns = classNames((_classNames = {}, defineProperty(_classNames, this._instancePrefix + '-list', isOpen), defineProperty(_classNames, this._instancePrefix + '-backspace-remove-message', this.props.multi && !this.props.disabled && this.state.isFocused && !this.state.inputValue), _classNames));
 
 			var value = this.state.inputValue;
-			if (value && !this.props.onSelectResetsInput && !this.state.isFocused) {
-				// it hides input value when it is not focused and was not reset on select
-				value = '';
-			}
 
 			var inputProps = _extends({}, this.props.inputProps, {
 				'aria-activedescendant': isOpen ? this._instancePrefix + '-option-' + focusedOptionIndex : this._instancePrefix + '-value',
@@ -2331,7 +2327,10 @@ var CreatableSelect = function (_React$Component) {
 			var filteredOptions = filterOptions$$1.apply(undefined, arguments) || [];
 
 			if (isValidNewOption({ label: this.inputValue })) {
-				var option = newDefaultOptionCreator({
+				var _newOptionCreator = this.props.newOptionCreator;
+
+
+				var option = _newOptionCreator({
 					label: this.inputValue,
 					labelKey: this.labelKey,
 					valueKey: this.valueKey
@@ -2347,7 +2346,7 @@ var CreatableSelect = function (_React$Component) {
 				if (_isOptionUnique) {
 					var prompt = promptTextCreator(this.inputValue);
 
-					this._createPlaceholderOption = newDefaultOptionCreator({
+					this._createPlaceholderOption = _newOptionCreator({
 						label: prompt,
 						labelKey: this.labelKey,
 						valueKey: this.valueKey
@@ -2502,22 +2501,10 @@ var isValidNewOption = function isValidNewOption(_ref4) {
 	return !!label;
 };
 
-var newDefaultOptionCreator = function newDefaultOptionCreator(_ref5) {
+var newOptionCreator = function newOptionCreator(_ref5) {
 	var label = _ref5.label,
 	    labelKey = _ref5.labelKey,
 	    valueKey = _ref5.valueKey;
-
-	var option = {};
-	option[valueKey] = label;
-	option[labelKey] = label;
-	option.className = 'Select-create-option-placeholder';
-	return option;
-};
-
-var newOptionCreator = function newOptionCreator(_ref6) {
-	var label = _ref6.label,
-	    labelKey = _ref6.labelKey,
-	    valueKey = _ref6.valueKey;
 
 	var option = {};
 	option[valueKey] = label;
@@ -2531,8 +2518,8 @@ var promptTextCreator = function promptTextCreator(label) {
 	return 'Create option "' + label + '"';
 };
 
-var shouldKeyDownEventCreateNewOption = function shouldKeyDownEventCreateNewOption(_ref7) {
-	var keyCode = _ref7.keyCode;
+var shouldKeyDownEventCreateNewOption = function shouldKeyDownEventCreateNewOption(_ref6) {
+	var keyCode = _ref6.keyCode;
 
 	switch (keyCode) {
 		case 9: // TAB
